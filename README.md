@@ -1,6 +1,9 @@
 # SmartDayPlanner
 
-A smart, weather-aware day planning API built with **.NET 9** and **MongoDB**. The application automatically generates personalized daily plans based on real-time weather conditions and user preferences.
+A smart, weather-aware day planning API built with **.NET 9** and **MongoDB**.  
+The application automatically generates personalized daily plans based on real-time weather conditions and user preferences.
+
+---
 
 ## Features
 
@@ -13,6 +16,8 @@ A smart, weather-aware day planning API built with **.NET 9** and **MongoDB**. T
 - **Docker Support**: Fully containerized with Docker Compose
 - **Swagger UI**: Interactive API documentation
 - **Structured Logging**: Serilog integration with file and console output
+
+---
 
 ## Architecture & Design Patterns
 
@@ -35,6 +40,8 @@ A smart, weather-aware day planning API built with **.NET 9** and **MongoDB**. T
 4. **Dependency Injection**
    - Services registered in `Program.cs`
 
+---
+
 ## Getting Started
 
 ### Prerequisites
@@ -43,160 +50,214 @@ A smart, weather-aware day planning API built with **.NET 9** and **MongoDB**. T
 - [.NET 9 SDK](https://dotnet.microsoft.com/download/dotnet/9.0) (for local development)
 - OpenWeatherMap API Key ([Get one free](https://openweathermap.org/api))
 
-### Configuration
+---
 
-1. **Clone the repository**
+## Configuration
 
-   cd SmartDayPlanner
-   git clone https://github.com/Mariana8l8/SmartDayPlanner.git
-   
-3. **Set your OpenWeatherMap API Key**
-   
-   Edit `SmartDayPlanner/appsettings.json`:
-   { "OpenWeatherMap": { "ApiKey": "your_api_key_here" } }
+### Clone the Repository
 
-### Running with Docker (Recommended)
+```bash
+git clone https://github.com/Mariana8l8/SmartDayPlanner.git
+cd SmartDayPlanner
+```
 
-    docker-compose up --build
+### Set OpenWeatherMap API Key
+
+Edit `SmartDayPlanner/appsettings.json`:
+
+```json
+{
+  "OpenWeatherMap": {
+    "ApiKey": "your_api_key_here"
+  }
+}
+```
+
+---
+
+## Running with Docker (Recommended)
+
+```bash
+docker-compose up --build
+```
 
 The application will be available at:
+
 - **API**: http://localhost:8080
 - **Swagger UI**: http://localhost:8080/swagger
 
-### Running Locally
+---
 
-1. **Start MongoDB** (use Docker or local installation)
+## Running Locally
 
-    docker run -d -p 27017:27017 --name mongodb mongo:latest
+### Start MongoDB
 
-2. **Update connection string** in `appsettings.json`:
+```bash
+docker run -d -p 27017:27017 --name mongodb mongo:latest
+```
 
-    "MongoSettings": { "ConnectionString": "mongodb://localhost:27017" }
+### Update MongoDB Connection String
 
-3. **Run the application**
+In `appsettings.json`:
 
-    dotnet run
-    cd SmartDayPlanner
+```json
+{
+  "MongoSettings": {
+    "ConnectionString": "mongodb://localhost:27017"
+  }
+}
+```
+
+### Run the Application
+
+```bash
+dotnet run
+```
+
+---
 
 ## API Endpoints
 
 ### Plans
 
-- `GET /api/plan/{city}` - Generate a plan based on current weather
-- `GET /api/plan/history` - Get all saved plans
-- `GET /api/plan/{city}/{date}` - Get plan for specific city and date
+- `GET /api/plan/{city}` – Generate a plan based on current weather
+- `GET /api/plan/history` – Get all saved plans
+- `GET /api/plan/{city}/{date}` – Get plan for a specific city and date
 
 ### Preferences
 
-- `GET /api/preferences` - Get user preferences
-- `PUT /api/preferences` - Update user preferences
+- `GET /api/preferences` – Get user preferences
+- `PUT /api/preferences` – Update user preferences
+
+---
 
 ## Tech Stack
 
-- **.NET 9.0** - Web API framework
-- **C# 13.0** - Programming language
-- **MongoDB** - NoSQL database
-- **Serilog** - Structured logging
-- **Swashbuckle** - Swagger/OpenAPI documentation
-- **Docker & Docker Compose** - Containerization
+- **.NET 9.0** – Web API framework
+- **C# 13.0** – Programming language
+- **MongoDB** – NoSQL database
+- **Serilog** – Structured logging
+- **Swashbuckle** – Swagger/OpenAPI documentation
+- **Docker & Docker Compose** – Containerization
+
+---
 
 ## NuGet Packages
 
-    <PackageReference Include="MongoDB.Bson" Version="3.5.0" /> 
-    <PackageReference Include="MongoDB.Driver" Version="3.5.0" /> 
-    <PackageReference Include="Serilog.AspNetCore" Version="9.0.0" /> 
-    <PackageReference Include="Serilog.Sinks.File" Version="7.0.0" /> 
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="10.0.1" />
+```xml
+<PackageReference Include="MongoDB.Bson" Version="3.5.0" />
+<PackageReference Include="MongoDB.Driver" Version="3.5.0" />
+<PackageReference Include="Serilog.AspNetCore" Version="9.0.0" />
+<PackageReference Include="Serilog.Sinks.File" Version="7.0.0" />
+<PackageReference Include="Swashbuckle.AspNetCore" Version="10.0.1" />
+```
+
+---
 
 ## Project Structure
 
+```text
 SmartDayPlanner/
 ├── Clients/
-│   └── OpenWeatherMapClient.cs        // External API integration
-│
+│   └── OpenWeatherMapClient.cs
 ├── Controllers/
-│   ├── PlanController.cs              // Plan endpoints
-│   └── PreferencesController.cs       // Preferences endpoints
-│
+│   ├── PlanController.cs
+│   └── PreferencesController.cs
 ├── Core/
-│   └── MongoSettings.cs               // MongoDB configuration
-│
+│   └── MongoSettings.cs
 ├── Data/
-│   └── MongoDbContext.cs              // Database context
-│
+│   └── MongoDbContext.cs
 ├── Delegates/
-│   └── WeatherUpdateDelegate.cs       // Event delegate
-│
+│   └── WeatherUpdateDelegate.cs
 ├── Models/
 │   ├── Activity.cs
 │   ├── FetchedWeather.cs
 │   ├── OpenWeatherResponse.cs
 │   ├── Plan.cs
 │   └── UserPreferences.cs
-│
 ├── Services/
-│   ├── DayPlanner.cs                  // Core planning logic
-│   ├── WeatherStation.cs              // Weather observer subject
+│   ├── DayPlanner.cs
+│   ├── WeatherStation.cs
 │   └── Hosted/
-│       ├── DbInitializerService.cs    // Database initialization
-│       └── WeatherCheckService.cs     // Background weather updates
-│
+│       ├── DbInitializerService.cs
+│       └── WeatherCheckService.cs
 ├── Strategies/
 │   ├── IWeatherStrategy.cs
 │   ├── SunnyWeatherStrategy.cs
 │   ├── RainyWeatherStrategy.cs
 │   ├── CloudyWeatherStrategy.cs
 │   └── SnowyWeatherStrategy.cs
-│
 └── wwwroot/
+```
+
+---
 
 ## How It Works
 
-1. **Weather Monitoring**: `WeatherCheckService` runs in the background, checking weather every 30 seconds
-2. **Weather Updates**: When weather changes, `WeatherStation` notifies subscribed observers
-3. **Strategy Selection**: `DayPlanner` selects appropriate strategy based on weather condition
-4. **Plan Generation**: Selected strategy generates activities based on user preferences
-5. **Persistence**: Plans are saved to MongoDB for history tracking
+1. `WeatherCheckService` runs in the background and checks weather every 30 seconds
+2. `WeatherStation` notifies observers when weather conditions change
+3. `DayPlanner` selects the appropriate weather strategy
+4. The selected strategy generates activities based on user preferences
+5. Generated plans are stored in MongoDB
+
+---
 
 ## Development
 
-### Building
+### Build
 
-    dotnet build
+```bash
+dotnet build
+```
 
-### Running Tests
+### Run Tests
 
-    dotnet test
+```bash
+dotnet test
+```
 
-### Viewing Logs
+### Logs
 
 Logs are written to:
+
 - Console output
-- `log/smartDayPlannerLogs.txt` (rolling daily)
+- `logs/smartDayPlannerLogs.txt` (rolling daily)
+
+---
 
 ## Docker Services
 
-- **mongo**: MongoDB database (port 27017)
-- **app**: SmartDayPlanner API (port 8080)
+- **mongo** – MongoDB database (port 27017)
+- **app** – SmartDayPlanner API (port 8080)
+
+---
 
 ## Contributing
 
+```text
 1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
+2. Create a feature branch
+3. Commit your changes
+4. Push to the branch
 5. Open a Pull Request
+```
+
+---
 
 ## License
 
 This project is part of a design patterns laboratory exercise.
 
+---
+
 ## Author
 
 **Mariana8l8**
 
-- GitHub: [@Mariana8l8](https://github.com/Mariana8l8)
-- Repository: [SmartDayPlanner](https://github.com/Mariana8l8/SmartDayPlanner)
+- GitHub: https://github.com/Mariana8l8
+- Repository: https://github.com/Mariana8l8/SmartDayPlanner
+
+---
 
 ## Support
 
