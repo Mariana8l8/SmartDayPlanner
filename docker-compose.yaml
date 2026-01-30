@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  mongo:
+    image: mongo:latest
+    container_name: mongodb_planner
+    restart: always
+    volumes:
+      - mongo_data:/data/db
+    ports:
+      - "27017:27017"
+    
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh --port 27017 --quiet
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: smart_day_planner_api
+    restart: always
+    environment:
+      - MongoSettings:ConnectionString=mongodb://mongo:27017
+      - MongoSettings:DatabaseName=SmartPlannerDB
+      - ASPNETCORE_URLS=http://+:8080 
+    ports:
+      - "8080:8080"
+      
+    depends_on:
+      mongo:
+        condition: service_healthy 
+        
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"] 
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    
+volumes:
+  mongo_data:

@@ -1,0 +1,84 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Day Planner</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Smart Day Planner</h1>
+
+        <div class="info-card weather-card">
+            <h2>Current Weather</h2>
+            <p id="weather-condition">Loading...</p>
+        </div>
+
+        <div class="info-card plan-card">
+            <h2>Your Plan for Today</h2>
+            <ul id="activity-list">
+                <li><small>Waiting for plan update...</small></li>
+            </ul>
+        </div>
+
+        <button id="refresh-button" onclick="refreshPlan()">Refresh Plan / Weather</button>
+
+    </div>
+
+    <script>
+        const userId = "Mariana"; // Fixed user ID for the lab
+        const planUrl = `/api/plan/current/${userId}`;
+        const weatherUrl = `/api/plan/weather`;
+
+        async function fetchPlan() {
+            try {
+                // Fetch weather
+                const weatherResponse = await fetch(weatherUrl);
+                const weatherData = await weatherResponse.text();
+                document.getElementById('weather-condition').innerText = weatherData || 'Unknown';
+
+                // Fetch plan
+                const planResponse = await fetch(planUrl);
+                const activityList = document.getElementById('activity-list');
+                activityList.innerHTML = '';
+
+                if (planResponse.ok) {
+                    const plan = await planResponse.json();
+
+                    if (plan.activities && plan.activities.length > 0) {
+                        plan.activities.forEach(activity => {
+                            const li = document.createElement('li');
+                            li.innerHTML = `<strong>[P${activity.priority}] ${activity.name}</strong> <small>(${activity.type})</small>`;
+                            activityList.appendChild(li);
+                        });
+                    } else {
+                        activityList.innerHTML = '<li>No activities proposed.</li>';
+                    }
+                } else {
+                    activityList.innerHTML = '<li>Plan has not been generated yet.</li>';
+                }
+
+            } catch (error) {
+                console.error('Error loading data:', error);
+                document.getElementById('weather-condition').innerText = 'Connection Error.';
+            }
+        }
+
+        function refreshPlan() {
+            // Update happens in the background (WeatherCheckService)
+            document.getElementById('weather-condition').innerText = 'Updating...';
+            document.getElementById('activity-list').innerHTML = '<li>Plan update request sent...</li>';
+
+            // Simulating a call to forced update API endpoint
+            fetch('/api/plan/refresh', { method: 'POST' }).then(() => {
+                // Delay to allow background service to run
+                setTimeout(fetchPlan, 2000);
+            });
+        }
+
+        // Load plan on startup
+        document.addEventListener('DOMContentLoaded', fetchPlan);
+    </script>
+</body>
+</html>
